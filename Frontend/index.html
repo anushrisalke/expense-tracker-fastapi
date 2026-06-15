@@ -8,6 +8,10 @@
 
 <h1>Expense Tracker</h1>
 
+<h2>
+    Total Spending: ₹{{ total }}
+</h2>
+
 <a href="/create">Add Expense</a>
 
 <br><br>
@@ -31,10 +35,16 @@
     <td>{{ expense.date }}</td>
 
     <td>
-        <a href="/delete/{{ expense.id }}">
-            Delete
-        </a>
-    </td>
+    <a href="/update/{{ expense.id }}">
+        Edit
+    </a>
+
+    |
+
+    <a href="/delete/{{ expense.id }}">
+        Delete
+    </a>
+</td>
 </tr>
 
     {% endfor %}

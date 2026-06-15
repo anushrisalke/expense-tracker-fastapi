@@ -52,12 +52,18 @@ def home(request: Request):
         select(Expense)
     ).all()
 
+    total = sum(
+    expense.amount
+    for expense in expenses
+)
+
     db.close()
 
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"expenses": expenses}
+        context={"expenses": expenses,
+                 "total":total}
     )
 
 # Create Page
@@ -102,6 +108,56 @@ def delete_expense(expense_id: int):
 
     if expense:
         db.delete(expense)
+        db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url="/",
+        status_code=303
+    )
+
+@app.get("/update/{expense_id}", response_class=HTMLResponse)
+def update_page(
+    request: Request,
+    expense_id: int
+):
+    db = SessionLocal()
+
+    expense = db.get(
+        Expense,
+        expense_id
+    )
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="update.html",
+        context={"expense": expense}
+    )
+
+@app.post("/update/{expense_id}")
+def update_expense(
+    expense_id: int,
+    title: str = Form(...),
+    amount: float = Form(...),
+    category: str = Form(...),
+    date: str = Form(...)
+):
+    db = SessionLocal()
+
+    expense = db.get(
+        Expense,
+        expense_id
+    )
+
+    if expense:
+        expense.title = title
+        expense.amount = amount
+        expense.category = category
+        expense.date = date
+
         db.commit()
 
     db.close()
