@@ -121,20 +121,29 @@ def signup(
 ):
     db = SessionLocal()
 
+    existing_user = db.scalars(
+        select(User).where(
+            User.username == username
+        )
+    ).first()
+
+    if existing_user:
+        db.close()
+        return {
+            "message": "Username already exists"
+        }
+
     user = User(
         username=username,
         password=get_password_hash(password)
     )
 
-
     db.add(user)
-    
     db.commit()
-
     db.close()
 
     return RedirectResponse(
-        url="/",
+        url="/login",
         status_code=303
     )
 
