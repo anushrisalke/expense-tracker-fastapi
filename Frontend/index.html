@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 
 <html>
+    
 <head>
     <title>Expense Tracker</title>
 </head>
 <body>
 
+<div style="text-align:right">
+    <a href="/logout">Logout</a>
+</div>
+
 <h1>Expense Tracker</h1>
-<h2>Hello I am Anushri .And this is our Expense Tracker app</h2>
+
+<h2>Hello I am Anushri. And this is our Expense Tracker app</h2>
 
 <h2>
     Total Spending: ₹{{ total }}
@@ -54,3 +60,53 @@
 
 </body>
 </html>
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background-color:#f4f6f9;
+}
+
+.container{
+    width:80%;
+    margin:auto;
+    margin-top:40px;
+    text-align:center;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0px 0px 15px rgba(0,0,0,0.1);
+}
+
+a.button{
+    background:#007bff;
+    color:white;
+    padding:10px 20px;
+    text-decoration:none;
+    border-radius:5px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th{
+    background:#007bff;
+    color:white;
+    padding:12px;
+}
+
+td{
+    padding:12px;
+}
+
+tr:nth-child(even){
+    background:#f2f2f2;
+}
+
+</style>
