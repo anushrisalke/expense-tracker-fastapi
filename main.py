@@ -190,11 +190,15 @@ def login(
 
         response.set_cookie(
 
-            key="access_token",
+    key="access_token",
 
-            value=token
+    value=token,
 
-        )
+    httponly=True
+
+)
+
+        
 
         return response
 
@@ -204,33 +208,13 @@ def login(
 
     }
 
-def get_current_user(request: Request):
 
-    token = request.cookies.get(
-        "access_token"
-    )
-
-    if not token:
-        return None
-
-    try:
-
-        payload = jwt.decode(
-            token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM]
-        )
-
-        return payload.get("sub")
-
-    except:
-
-        return None
     
 def get_current_user(request: Request):
 
     token = request.cookies.get(
         "access_token"
+        
     )
 
     if not token:
@@ -297,7 +281,10 @@ def home(request: Request):
         name="index.html",
         context={
             "expenses": expenses,
-            "total": total
+            "total": total,
+            "current_user": current_user
+
+    
         }
     )
 
@@ -305,6 +292,18 @@ def home(request: Request):
 
 @app.get("/create", response_class=HTMLResponse)
 def create_page(request: Request):
+
+    current_user = get_current_user(
+        request
+    )
+
+    if not current_user:
+
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
     return templates.TemplateResponse(
         request=request,
         name="create.html"

@@ -1,66 +1,10 @@
 <!DOCTYPE html>
 
 <html>
-    
+
 <head>
     <title>Expense Tracker</title>
-</head>
-<body>
-
-<div style="text-align:right">
-    <a href="/logout">Logout</a>
-</div>
-
-<h1>Expense Tracker</h1>
-
-<h2>Hello I am Anushri. And this is our Expense Tracker app</h2>
-
-<h2>
-    Total Spending: ₹{{ total }}
-</h2>
-
-<a href="/create">Add Expense</a>
-
-<br><br>
-
-<table border="1" cellpadding="10">
-
-    <tr>
-        <th>Title</th>
-        <th>Amount</th>
-        <th>Category</th>
-        <th>Date</th>
-        <th>Action</th>
-    </tr>
-
-    {% for expense in expenses %}
-
-    <tr>
-    <td>{{ expense.title }}</td>
-    <td>{{ expense.amount }}</td>
-    <td>{{ expense.category }}</td>
-    <td>{{ expense.date }}</td>
-
-    <td>
-    <a href="/update/{{ expense.id }}">
-        Edit
-    </a>
-
-    |
-
-    <a href="/delete/{{ expense.id }}">
-        Delete
-    </a>
-</td>
-</tr>
-
-    {% endfor %}
-
-</table>
-
-</body>
-</html>
-<style>
+    <style>
 
 body{
     font-family: Arial, sans-serif;
@@ -71,7 +15,6 @@ body{
     width:80%;
     margin:auto;
     margin-top:40px;
-    text-align:center;
 }
 
 .card{
@@ -81,7 +24,7 @@ body{
     box-shadow:0px 0px 15px rgba(0,0,0,0.1);
 }
 
-a.button{
+.button{
     background:#007bff;
     color:white;
     padding:10px 20px;
@@ -110,3 +53,71 @@ tr:nth-child(even){
 }
 
 </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<div style="text-align:right">
+    <a href="/logout">Logout</a>
+</div>
+
+<h1>Expense Tracker</h1>
+
+<h3>Welcome {{ current_user }}</h3>
+
+<h2>
+    Total Spending: ₹{{ total }}
+</h2>
+
+<a href="/create" class="button">
+    Add Expense
+</a>
+
+<br><br>
+
+<table>
+
+    <tr>
+        <th>Title</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Date</th>
+        <th>Action</th>
+    </tr>
+
+    {% for expense in expenses %}
+
+    <tr>
+        <td>{{ expense.title }}</td>
+        <td>{{ expense.amount }}</td>
+        <td>{{ expense.category }}</td>
+        <td>{{ expense.date }}</td>
+
+        <td>
+            <a href="/update/{{ expense.id }}">
+                Edit
+            </a>
+
+            |
+
+            <a href="/delete/{{ expense.id }}">
+                Delete
+            </a>
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
