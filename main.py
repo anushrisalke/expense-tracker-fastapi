@@ -128,7 +128,9 @@ def signup(
     ).first()
 
     if existing_user:
+
         db.close()
+
         return {
             "message": "Username already exists"
         }
