@@ -1,62 +1,125 @@
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
     <title>Add Expense</title>
+
+    <style>
+
+        body{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            margin:0;
+            font-family:Arial, sans-serif;
+            background:linear-gradient(
+                135deg,
+                #dbeafe,
+                #f5d0fe
+            );
+        }
+
+        .card{
+            background:white;
+            padding:35px;
+            border-radius:15px;
+            width:350px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        h2{
+            text-align:center;
+            color:#2563eb;
+            margin-bottom:25px;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            margin:10px 0;
+            border:1px solid #d1d5db;
+            border-radius:8px;
+            box-sizing:border-box;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:8px;
+            background:#2563eb;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#1d4ed8;
+        }
+
+        a{
+            display:block;
+            text-align:center;
+            margin-top:15px;
+            text-decoration:none;
+            color:#6b7280;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-    <h1>Add Expense</h1>
+<div class="card">
 
-<form method="POST">
+    <h2>Add Expense</h2>
 
-    <label>Title</label>
-    <br>
-    <input
-        type="text"
-        name="title"
-        required
-    >
-    <br><br>
+    <form method="post">
 
-    <label>Amount</label>
-    <br>
-    <input
-        type="number"
-        step="0.01"
-        name="amount"
-        required
-    >
-    <br><br>
+        <input
+            type="text"
+            name="title"
+            placeholder="Expense Title"
+            required
+        >
 
-    <label>Category</label>
-    <br>
-    <input
-        type="text"
-        name="category"
-        required
-    >
-    <br><br>
+        <input
+            type="number"
+            step="0.01"
+            name="amount"
+            placeholder="Amount"
+            required
+        >
 
-    <label>Date</label>
-    <br>
-    <input
-        type="date"
-        name="date"
-        required
-    >
-    <br><br>
+        <input
+            type="text"
+            name="category"
+            placeholder="Category"
+            required
+        >
 
-    <button type="submit">
-        Save Expense
-    </button>
+        <input
+            type="date"
+            name="date"
+            required
+        >
 
-</form>
+        <button type="submit">
+            Save Expense
+        </button>
 
-<br>
+    </form>
 
-<a href="/">
-    Back to Home
-</a>
+    <a href="/">
+        ← Back to Home
+    </a>
+
+</div>
 
 </body>
+
 </html>

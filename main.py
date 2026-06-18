@@ -89,6 +89,8 @@ class Expense(Base):
 
     date: Mapped[str] = mapped_column(String(20))
 
+    user_id: Mapped[int]
+
 
 class User(Base):
     __tablename__ = "users"
@@ -265,9 +267,17 @@ def home(request: Request):
 
     db = SessionLocal()
 
+    user = db.scalars(
+    select(User).where(
+        User.username == current_user
+    )
+).first()
+
     expenses = db.scalars(
-        select(Expense)
-    ).all()
+    select(Expense).where(
+        Expense.user_id == user.id
+    )
+     ).all()
 
     total = sum(
         expense.amount
@@ -311,6 +321,7 @@ def create_page(request: Request):
 
 @app.post("/create")
 def create_expense(
+    request: Request,
     title: str = Form(...),
     amount: float = Form(...),
     category: str = Form(...),
@@ -318,11 +329,20 @@ def create_expense(
 ):
     db = SessionLocal()
 
+    current_user = get_current_user(request)
+
+    user = db.scalars(
+    select(User).where(
+        User.username == current_user
+    )
+ ).first()
+
     expense = Expense(
         title=title,
         amount=amount,
         category=category,
-        date=date
+        date=date,
+        user_id=user.id
     )
 
     db.add(expense)
