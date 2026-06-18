@@ -174,12 +174,21 @@ def home(request: Request):
     if not current_user:
         return RedirectResponse(url="/login", status_code=303)
     db = SessionLocal()
+
     user = db.scalars(
-        select(User).where(User.username == current_user)
-    ).first()
+    select(User).where(User.username == current_user)
+).first()
+
+    if not user:
+     db.close()
+     return RedirectResponse(
+        url="/login",
+        status_code=303
+    )
+
     expenses = db.scalars(
-        select(Expense).where(Expense.user_id == user.id)
-    ).all()
+    select(Expense).where(Expense.user_id == user.id)
+).all()
     total = sum(expense.amount for expense in expenses)
     db.close()
     return templates.TemplateResponse(
