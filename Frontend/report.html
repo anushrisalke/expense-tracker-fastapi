@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report — Spendwise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0fdf4;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: #16a34a;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-icon i { color: #fff; font-size: 20px; }
+    .logo-name { font-size: 17px; font-weight: 600; color: #0f172a; }
+    .logo-sub { font-size: 12px; color: #64748b; margin-top: 1px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      border-radius: 9px;
+      text-decoration: none;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #475569;
+      transition: background 0.15s;
+    }
+    .nav-btn:hover { background: #f8fafc; }
+    .nav-btn i { font-size: 15px; }
+    .nav-btn.active {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #16a34a;
+    }
+
+    /* Page header */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.75rem;
+    }
+    .page-header-icon {
+      width: 36px;
+      height: 36px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page-header-icon i { color: #16a34a; font-size: 18px; }
+    .page-header h1 { font-size: 20px; font-weight: 600; color: #0f172a; }
+    .page-header p { font-size: 13px; color: #64748b; margin-top: 2px; }
+
+    /* Summary stat */
+    .total-card {
+      background: #fff;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .total-label {
+      font-size: 13px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .total-label i { font-size: 16px; color: #16a34a; }
+    .total-value {
+      font-size: 26px;
+      font-weight: 600;
+      color: #16a34a;
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 620px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .card-title i { font-size: 17px; color: #16a34a; }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      padding: 8px 10px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    tbody td {
+      padding: 11px 10px;
+      color: #0f172a;
+      border-bottom: 1px solid #f8fafc;
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f8fafc; }
+
+    .badge {
+      display: inline-flex;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 99px;
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+    .amount-cell { font-weight: 600; color: #0f172a; }
+
+    /* Progress bar */
+    .bar-wrap {
+      height: 6px;
+      background: #f1f5f9;
+      border-radius: 99px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: #16a34a;
+      transition: width 0.4s;
+    }
+    .bar-fill.warning { background: #f59e0b; }
+    .bar-fill.danger  { background: #ef4444; }
+
+    .empty {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+    .empty i { font-size: 32px; margin-bottom: 8px; display: block; color: #cbd5e1; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="ti ti-chart-pie-2"></i>
+        </div>
+        <div>
+          <div class="logo-name">Spendwise</div>
+          <div class="logo-sub">Expense Tracker</div>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="/" class="nav-btn"><i class="ti ti-home"></i> Home</a>
+        <a href="/budget" class="nav-btn"><i class="ti ti-wallet"></i> Budget</a>
+        <a href="/report" class="nav-btn active"><i class="ti ti-chart-bar"></i> Report</a>
+        <a href="/logout" class="nav-btn" style="color:#dc2626; border-color:#fecaca;">
+          <i class="ti ti-logout"></i> Logout
+        </a>
+      </div>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-header-icon">
+        <i class="ti ti-chart-bar"></i>
+      </div>
+      <div>
+        <h1>Spending Report</h1>
+        <p>Breakdown of your expenses by category and month</p>
+      </div>
+    </div>
+
+    <!-- Total -->
+    <div class="total-card">
+      <div class="total-label">
+        <i class="ti ti-wallet"></i> Total Spending (All Time)
+      </div>
+      <div class="total-value">₹{{ total }}</div>
+    </div>
+
+    <!-- Two column grid -->
+    <div class="grid">
+
+      <!-- By Category -->
+      <div class="card">
+        <div class="card-title">
+          <i class="ti ti-layout-grid"></i> By Category
+        </div>
+        {% if category_totals %}
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for category, amount in category_totals.items() %}
+            <tr>
+              <td>
+                <span class="badge">{{ category }}</span>
+                <div class="bar-wrap">
+                  <div class="bar-fill
+                    {% if total > 0 and (amount / total) > 0.6 %}danger
+                    {% elif total > 0 and (amount / total) > 0.35 %}warning
+                    {% endif %}"
+                    style="width: {% if total > 0 %}{{ ((amount / total) * 100) | round | int }}%{% else %}0%{% endif %}">
+                  </div>
+                </div>
+              </td>
+              <td class="amount-cell">₹{{ amount }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+          <i class="ti ti-mood-empty"></i>
+          <p>No data yet</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- By Month -->
+      <div class="card">
+        <div class="card-title">
+          <i class="ti ti-calendar"></i> By Month
+        </div>
+        {% if month_totals %}
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for month, amount in month_totals.items() %}
+            <tr>
+              <td style="color:#64748b;">{{ month }}</td>
+              <td class="amount-cell">₹{{ amount }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+          <i class="ti ti-mood-empty"></i>
+          <p>No data yet</p>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

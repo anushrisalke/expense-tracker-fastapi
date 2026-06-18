@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget — Spendwise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0fdf4;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: #16a34a;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-icon i { color: #fff; font-size: 20px; }
+    .logo-name { font-size: 17px; font-weight: 600; color: #0f172a; }
+    .logo-sub { font-size: 12px; color: #64748b; margin-top: 1px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      border-radius: 9px;
+      text-decoration: none;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #475569;
+      transition: background 0.15s;
+    }
+    .nav-btn:hover { background: #f8fafc; }
+    .nav-btn i { font-size: 15px; }
+    .nav-btn.active {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #16a34a;
+    }
+
+    /* Page header */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.75rem;
+    }
+    .page-header-icon {
+      width: 36px;
+      height: 36px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page-header-icon i { color: #16a34a; font-size: 18px; }
+    .page-header h1 { font-size: 20px; font-weight: 600; color: #0f172a; }
+    .page-header p { font-size: 13px; color: #64748b; margin-top: 2px; }
+
+    /* Layout grid */
+    .layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+    @media (max-width: 680px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .card-title i { font-size: 17px; color: #16a34a; }
+
+    /* Form */
+    .field { margin-bottom: 1rem; }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    label i { font-size: 14px; color: #94a3b8; }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="month"],
+    select {
+      width: 100%;
+      height: 42px;
+      padding: 0 12px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      background: #f8fafc;
+      color: #0f172a;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="month"]:focus,
+    select:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+      background: #fff;
+    }
+    input::placeholder { color: #cbd5e1; }
+
+    .amount-wrap { position: relative; }
+    .amount-prefix {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      font-weight: 500;
+      color: #64748b;
+      pointer-events: none;
+    }
+    .amount-wrap input { padding-left: 28px; }
+
+    .btn {
+      width: 100%;
+      height: 42px;
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-top: 0.5rem;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: #15803d; }
+    .btn i { font-size: 16px; }
+
+    /* Budget table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    tbody td {
+      padding: 13px 12px;
+      color: #0f172a;
+      border-bottom: 1px solid #f8fafc;
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f8fafc; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 99px;
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+    .amount-cell { font-weight: 600; color: #0f172a; }
+
+    .empty {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: #94a3b8;
+    }
+    .empty i { font-size: 36px; margin-bottom: 10px; display: block; color: #cbd5e1; }
+    .empty p { font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="ti ti-chart-pie-2"></i>
+        </div>
+        <div>
+          <div class="logo-name">Spendwise</div>
+          <div class="logo-sub">Expense Tracker</div>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="/" class="nav-btn"><i class="ti ti-home"></i> Home</a>
+        <a href="/budget" class="nav-btn active"><i class="ti ti-wallet"></i> Budget</a>
+        <a href="/report" class="nav-btn"><i class="ti ti-chart-bar"></i> Report</a>
+        <a href="/logout" class="nav-btn" style="color:#dc2626; border-color:#fecaca;">
+          <i class="ti ti-logout"></i> Logout
+        </a>
+      </div>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-header-icon">
+        <i class="ti ti-wallet"></i>
+      </div>
+      <div>
+        <h1>Monthly Budgets</h1>
+        <p>Set spending limits per category for each month</p>
+      </div>
+    </div>
+
+    <div class="layout">
+
+      <!-- Set Budget Form -->
+      <div class="card">
+        <div class="card-title">
+          <i class="ti ti-plus"></i> Set a Budget
+        </div>
+        <form method="post">
+
+          <div class="field">
+            <label for="category">
+              <i class="ti ti-layout-grid"></i> Category
+            </label>
+            <select id="category" name="category" required>
+              <option value="" disabled selected>Select category</option>
+              <option value="Food">🍔 Food</option>
+              <option value="Travel">✈️ Travel</option>
+              <option value="Shopping">🛍️ Shopping</option>
+              <option value="Bills">📄 Bills</option>
+              <option value="Health">💊 Health</option>
+              <option value="Other">📦 Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="amount">
+              <i class="ti ti-currency-rupee"></i> Budget Limit
+            </label>
+            <div class="amount-wrap">
+              <span class="amount-prefix">₹</span>
+              <input type="number" id="amount" name="amount"
+                     step="0.01" placeholder="0.00" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="month">
+              <i class="ti ti-calendar"></i> Month
+            </label>
+            <input type="month" id="month" name="month" required>
+          </div>
+
+          <button type="submit" class="btn">
+            <i class="ti ti-check"></i> Save Budget
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Budgets Table -->
+      <div class="card">
+        <div class="card-title">
+          <i class="ti ti-list"></i> Your Budgets
+        </div>
+        {% if budgets %}
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Limit</th>
+              <th>Month</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for budget in budgets %}
+            <tr>
+              <td><span class="badge">{{ budget.category }}</span></td>
+              <td class="amount-cell">₹{{ budget.amount }}</td>
+              <td style="color:#64748b;">{{ budget.month }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+          <i class="ti ti-mood-empty"></i>
+          <p>No budgets set yet. Add one on the left!</p>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
