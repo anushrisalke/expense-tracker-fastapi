@@ -214,9 +214,18 @@ def create_expense(
 ):
     db = SessionLocal()
     current_user = get_current_user(request)
+
+    if not current_user:
+     return {"message": "Not logged in"}
+    
     user = db.scalars(
         select(User).where(User.username == current_user)
     ).first()
+
+    if not user:
+
+     return {"message": "User not found"}
+    
     expense = Expense(
         title=title,
         amount=amount,
@@ -303,11 +312,19 @@ def set_budget(
     month: str = Form(...)   # e.g. 2025-06
 ):
     current_user = get_current_user(request)
+    
+
+    if not current_user:
+     return {"message": "Not logged in"}
+    
     db = SessionLocal()
     user = db.scalars(
         select(User).where(User.username == current_user)
     ).first()
 
+    if not user:
+        return {"message": "User not found"}
+    
     # If budget for same category+month exists, update it
     existing = db.scalars(
         select(Budget).where(
