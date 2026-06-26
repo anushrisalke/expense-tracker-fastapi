@@ -187,18 +187,59 @@ def home(request: Request):
     )
 
     expenses = db.scalars(
-    select(Expense).where(Expense.user_id == user.id)
+    select(Expense).where(
+        Expense.user_id == user.id
+    )
+    ).all()
+
+    budgets = db.scalars(
+    select(Budget).where(
+        Budget.user_id == user.id
+    )
 ).all()
-    total = sum(expense.amount for expense in expenses)
+
+    total_spent = sum(
+    expense.amount
+    for expense in expenses
+    )
+
+    total_budget = sum(
+    budget.amount
+    for budget in budgets
+)
+
+    remaining_budget = max(total_budget - total_spent, 0)
+
+    budget_exceeded = total_spent > total_budget
+
+    over_budget = max(total_spent - total_budget, 0)
+
+
+    if total_budget > 0:
+     budget_percentage = min(
+        round((total_spent / total_budget) * 100, 1),
+        100
+    )
+    else:
+     budget_percentage = 0
+
+
+
     db.close()
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={
-            "expenses": expenses,
-            "total": total,
-            "current_user": current_user
-        }
+
+    context={
+    "expenses": expenses,
+    "total_spent": total_spent,
+    "total_budget": total_budget,
+    "remaining_budget": remaining_budget,
+     "budget_percentage": budget_percentage,
+     "budget_exceeded": budget_exceeded,
+    "current_user": current_user
+     }
     )
 
 
@@ -317,9 +358,14 @@ def budget_page(request: Request):
 def set_budget(
     request: Request,
     category: str = Form(...),
+    custom_category: str = Form(""),
     amount: float = Form(...),
-    month: str = Form(...)   # e.g. 2025-06
+    month: str = Form(...)
 ):
+
+    if category == "Other":
+        category = custom_category
+        
     current_user = get_current_user(request)
     
 
@@ -358,7 +404,75 @@ def set_budget(
     db.close()
     return RedirectResponse(url="/budget", status_code=303)
 
+@app.get("/budget/delete/{budget_id}")
+def delete_budget(budget_id: int):
 
+    db = SessionLocal()
+
+    budget = db.get(Budget, budget_id)
+
+    if budget:
+        db.delete(budget)
+        db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url="/budget",
+        status_code=303
+    )
+
+
+
+@app.get("/budget/update/{budget_id}", response_class=HTMLResponse)
+def update_budget_page(
+    request: Request,
+    budget_id: int
+):
+
+    db = SessionLocal()
+
+    budget = db.get(Budget, budget_id)
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="update_budget.html",
+        context={
+            "budget": budget
+        }
+    )
+
+@app.post("/budget/update/{budget_id}")
+def update_budget(
+    budget_id: int,
+    category: str = Form(...),
+    custom_category: str = Form(""),
+    amount: float = Form(...),
+    month: str = Form(...)
+):
+    if category == "Other":
+     category = custom_category
+
+    db = SessionLocal()
+
+    budget = db.get(Budget, budget_id)
+
+    if budget:
+
+        budget.category = category
+        budget.amount = amount
+        budget.month = month
+
+        db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url="/budget",
+        status_code=303
+    )
 # ------------------- REPORT (NEW) -------------------
 
 @app.get("/report", response_class=HTMLResponse)

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Budget — Spendwise</title>
+  <title>Update Budget — Spendwise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -325,8 +325,8 @@
         <i class="ti ti-wallet"></i>
       </div>
       <div>
-        <h1>Monthly Budgets</h1>
-        <p>Set spending limits per category for each month</p>
+        <h1>Update Budget</h1>
+         <p>Edit your existing budget</p>
       </div>
     </div>
 
@@ -335,23 +335,71 @@
       <!-- Set Budget Form -->
       <div class="card">
         <div class="card-title">
-          <i class="ti ti-plus"></i> Set a Budget
+          <i class="ti ti-pencil"></i> Update Budget
         </div>
-        <form method="post">
+        <form method="post" action="/budget/update/{{ budget.id }}">
 
-          <div class="field">
-            <label for="category">
-              <i class="ti ti-layout-grid"></i> Category
-            </label>
-            <select id="category" name="category" required>
-              <option value="" disabled selected>Select category</option>
-              <option value="Food">🍔 Food</option>
-              <option value="Travel">✈️ Travel</option>
-              <option value="Shopping">🛍️ Shopping</option>
-              <option value="Bills">📄 Bills</option>
-              <option value="Health">💊 Health</option>
-              <option value="Other">📦 Other</option>
-            </select>
+          
+    <div class="field">
+  <label for="category">
+    <i class="ti ti-layout-grid"></i> Category
+  </label>
+
+  <select
+      id="category"
+      name="category"
+      onchange="toggleCustomCategory()"
+      required
+  >
+
+    <option value="Food"
+    {% if budget.category=="Food" %}selected{% endif %}>
+      🍔 Food
+    </option>
+
+    <option value="Travel"
+    {% if budget.category=="Travel" %}selected{% endif %}>
+      ✈️ Travel
+    </option>
+
+    <option value="Shopping"
+    {% if budget.category=="Shopping" %}selected{% endif %}>
+      🛍️ Shopping
+    </option>
+
+    <option value="Bills"
+    {% if budget.category=="Bills" %}selected{% endif %}>
+      📄 Bills
+    </option>
+
+    <option value="Health"
+    {% if budget.category=="Health" %}selected{% endif %}>
+      💊 Health
+    </option>
+
+   <option value="Other"
+{% if budget.category != "Food" and budget.category != "Travel" and budget.category != "Shopping" and budget.category != "Bills" and budget.category != "Health" %}selected{% endif %}>
+📦 Other (Custom)
+</option>
+
+  </select>
+
+
+   
+
+<div
+    id="custom-category-box"
+    style="display:none; margin-top:12px;"
+>
+    <input
+type="text"
+id="custom-category"
+name="custom-category"
+value="{{ budget.category }}"
+placeholder="Enter your category">
+
+    
+</div>
           </div>
 
           <div class="field">
@@ -360,8 +408,14 @@
             </label>
             <div class="amount-wrap">
               <span class="amount-prefix">₹</span>
-              <input type="number" id="amount" name="amount"
-                     step="0.01" placeholder="0.00" required>
+              <input 
+
+               type="number"
+               id="amount"
+               name="amount"
+               step="0.01"
+               value="{{ budget.amount }}"
+               required>
             </div>
           </div>
 
@@ -369,76 +423,76 @@
             <label for="month">
               <i class="ti ti-calendar"></i> Month
             </label>
-            <input type="month" id="month" name="month" required>
+            <input type="month" id="month" name="month" value="{{ budget.month }}" required>
           </div>
 
           <button type="submit" class="btn">
-            <i class="ti ti-check"></i> Save Budget
+            <i class="ti ti-check"></i> Update Budget
           </button>
 
         </form>
       </div>
 
-      <!-- Budgets Table -->
-      <div class="card">
-        <div class="card-title">
-          <i class="ti ti-list"></i> Your Budgets
-        </div>
-        {% if budgets %}
-        <table>
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Limit</th>
-              <th>Month</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for budget in budgets %}
-            <tr>
-  <td><span class="badge">{{ budget.category }}</span></td>
+      
+      
 
-  <td class="amount-cell">
-    ₹{{ budget.amount }}
-  </td>
-
-  <td style="color:#64748b;">
-    {{ budget.month }}
-  </td>
-
-  <td>
-    <div class="actions">
-
-      <a href="/budget/update/{{ budget.id }}"
-         class="action-btn edit-btn">
-        <i class="ti ti-pencil"></i>
-        Edit
-      </a>
-
-      <a href="/budget/delete/{{ budget.id }}"
-         class="action-btn delete-btn"
-         onclick="return confirm('Delete this budget?')">
-        <i class="ti ti-trash"></i>
-        Delete
-      </a>
-
-    </div>
-  </td>
-</tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        {% else %}
-        <div class="empty">
-          <i class="ti ti-mood-empty"></i>
-          <p>No budgets set yet. Add one on the left!</p>
-        </div>
-        {% endif %}
+          
       </div>
 
     </div>
   </div>
+<script>
 
+function toggleCustomCategory() {
+
+    const select = document.getElementById("category");
+
+    const customBox =
+        document.getElementById("custom-category-box");
+
+    const customInput =
+        document.getElementById("custom-category");
+
+    if (select.value === "Other") {
+
+        customBox.style.display = "block";
+
+        customInput.required = true;
+
+    }
+
+    else {
+
+        customBox.style.display = "none";
+
+        customInput.required = false;
+
+    }
+
+}
+
+document.querySelector("form").addEventListener("submit", function () {
+
+    const select = document.getElementById("category");
+
+    const custom = document.getElementById("custom-category");
+
+    if (select.value === "Other") {
+
+        const option = document.createElement("option");
+
+        option.value = custom.value;
+
+        option.text = custom.value;
+
+        option.selected = true;
+
+        select.appendChild(option);
+
+    }
+
+});
+window.onload = toggleCustomCategory;
+</script>
 </body>
 </html>
