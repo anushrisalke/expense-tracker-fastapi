@@ -336,21 +336,67 @@ def update_expense(
 
 @app.get("/budget", response_class=HTMLResponse)
 def budget_page(request: Request):
+
     current_user = get_current_user(request)
+
     if not current_user:
         return RedirectResponse(url="/login", status_code=303)
+
     db = SessionLocal()
+
     user = db.scalars(
         select(User).where(User.username == current_user)
     ).first()
+
     budgets = db.scalars(
         select(Budget).where(Budget.user_id == user.id)
     ).all()
+
+    expenses = db.scalars(
+        select(Expense).where(Expense.user_id == user.id)
+    ).all()
+
+    budget_analysis = []
+
+    for budget in budgets:
+
+        spent = sum(
+            expense.amount
+            for expense in expenses
+            if expense.category == budget.category
+        )
+
+        remaining = budget.amount - spent
+
+        percentage = (
+            round((spent / budget.amount) * 100, 1)
+            if budget.amount > 0 else 0
+        )
+
+        budget_analysis.append({
+
+           "id": budget.id,
+           "category": budget.category,
+           "budget": budget.amount,
+          "spent": spent,
+          "remaining": remaining,
+          "percentage": min(percentage, 100),
+          "month": budget.month
+
+})  
+
     db.close()
+
     return templates.TemplateResponse(
+
         request=request,
+
         name="budget.html",
-        context={"budgets": budgets}
+
+        context={
+            "budgets": budgets,
+            "budget_analysis": budget_analysis
+        }
     )
 
 
@@ -365,7 +411,7 @@ def set_budget(
 
     if category == "Other":
         category = custom_category
-        
+
     current_user = get_current_user(request)
     
 

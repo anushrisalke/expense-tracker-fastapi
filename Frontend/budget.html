@@ -337,34 +337,82 @@
         <div class="card-title">
           <i class="ti ti-plus"></i> Set a Budget
         </div>
-        <form method="post">
+        <form method="post" action="/budget">
 
           <div class="field">
-            <label for="category">
-              <i class="ti ti-layout-grid"></i> Category
-            </label>
-            <select id="category" name="category" required>
-              <option value="" disabled selected>Select category</option>
-              <option value="Food">🍔 Food</option>
-              <option value="Travel">✈️ Travel</option>
-              <option value="Shopping">🛍️ Shopping</option>
-              <option value="Bills">📄 Bills</option>
-              <option value="Health">💊 Health</option>
-              <option value="Other">📦 Other</option>
-            </select>
-          </div>
+    <label for="category">
+        <i class="ti ti-layout-grid"></i> Category
+    </label>
 
-          <div class="field">
-            <label for="amount">
-              <i class="ti ti-currency-rupee"></i> Budget Limit
-            </label>
-            <div class="amount-wrap">
-              <span class="amount-prefix">₹</span>
-              <input type="number" id="amount" name="amount"
-                     step="0.01" placeholder="0.00" required>
-            </div>
-          </div>
+    <select
+        id="category"
+        name="category"
+        required
+        onchange="toggleCategoryInput()">
 
+        <option value="" disabled selected>Select category</option>
+        <option value="Food">🍔 Food</option>
+        <option value="Travel">✈️ Travel</option>
+        <option value="Shopping">🛍️ Shopping</option>
+        <option value="Bills">📄 Bills</option>
+        <option value="Health">💊 Health</option>
+        <option value="Other">📦 Other (Type Your Own)</option>
+
+    </select>
+</div>
+
+<div
+    class="field"
+    id="customCategoryBox"
+    style="display:none;">
+
+    <label for="custom_category">
+        <i class="ti ti-pencil"></i> Custom Category
+    </label>
+    <input
+
+        type="text"
+
+        id="custom_category"
+
+        name="custom_category"
+
+        placeholder="e.g. Fertilizers">
+        </div>
+
+<div class="field">
+
+    <label for="amount">
+
+        <i class="ti ti-currency-rupee"></i>
+
+        Budget Limit
+
+    </label>
+
+    <div class="amount-wrap">
+
+        <span class="amount-prefix">₹</span>
+
+        <input
+
+            type="number"
+
+            id="amount"
+
+            name="amount"
+
+            step="0.01"
+
+            placeholder="0.00"
+
+            required>
+
+    </div>
+
+</div>
+
+           
           <div class="field">
             <label for="month">
               <i class="ti ti-calendar"></i> Month
@@ -377,68 +425,161 @@
           </button>
 
         </form>
-      </div>
-
-      <!-- Budgets Table -->
-      <div class="card">
-        <div class="card-title">
-          <i class="ti ti-list"></i> Your Budgets
         </div>
-        {% if budgets %}
-        <table>
-          <thead>
+      <div class="card">
+
+    <div class="card-title">
+        <i class="ti ti-chart-bar"></i>
+        Budget Analysis
+    </div>
+
+    {% if budget_analysis %}
+
+    <table>
+
+        <thead>
+
             <tr>
-              <th>Category</th>
-              <th>Limit</th>
-              <th>Month</th>
-              <th>Actions</th>
+
+                <th>Category</th>
+                <th>Budget</th>
+                <th>Spent</th>
+                <th>Remaining</th>
+                <th>Progress</th>
+                <th>Month</th>
+                <th>Actions</th>
+
             </tr>
-          </thead>
-          <tbody>
-            {% for budget in budgets %}
-            <tr>
-  <td><span class="badge">{{ budget.category }}</span></td>
 
-  <td class="amount-cell">
-    ₹{{ budget.amount }}
-  </td>
+        </thead>
 
-  <td style="color:#64748b;">
-    {{ budget.month }}
-  </td>
+        <tbody>
 
-  <td>
-    <div class="actions">
+        {% for item in budget_analysis %}
 
-      <a href="/budget/update/{{ budget.id }}"
-         class="action-btn edit-btn">
-        <i class="ti ti-pencil"></i>
-        Edit
-      </a>
+        <tr>
 
-      <a href="/budget/delete/{{ budget.id }}"
-         class="action-btn delete-btn"
-         onclick="return confirm('Delete this budget?')">
-        <i class="ti ti-trash"></i>
-        Delete
-      </a>
+            <td>
+                <span class="badge">
+                    {{ item.category }}
+                </span>
+            </td>
+
+            <td>₹{{ item.budget }}</td>
+
+            <td>₹{{ item.spent }}</td>
+
+            <td>
+
+                {% if item.remaining >= 0 %}
+
+                    ₹{{ item.remaining }}
+
+                {% else %}
+
+                    <span style="color:#dc2626;">
+                        ₹{{ item.remaining }}
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td style="width:180px;">
+
+                <div style="
+                    width:100%;
+                    height:10px;
+                    background:#e5e7eb;
+                    border-radius:999px;">
+
+                    <div style="
+                        width:{{ item.percentage }}%;
+                        height:10px;
+                        background:#16a34a;
+                        border-radius:999px;">
+
+                    </div>
+
+                </div>
+
+                <small>{{ item.percentage }}%</small>
+
+            </td>
+
+            <td>{{ item.month }}</td>
+
+            <td>
+
+                <div class="actions">
+
+                    <a href="/budget/update/{{ item.id }}"
+                       class="action-btn edit-btn">
+                        <i class="ti ti-pencil"></i>
+                        Edit
+                    </a>
+
+                    <a href="/budget/delete/{{ item.id }}"
+                       class="action-btn delete-btn"
+                       onclick="return confirm('Delete this budget?')">
+                        <i class="ti ti-trash"></i>
+                        Delete
+                    </a>
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="empty">
+
+        <i class="ti ti-mood-empty"></i>
+
+        <p>No budgets found.</p>
 
     </div>
-  </td>
-</tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        {% else %}
-        <div class="empty">
-          <i class="ti ti-mood-empty"></i>
-          <p>No budgets set yet. Add one on the left!</p>
-        </div>
-        {% endif %}
+
+    {% endif %}
+
+</div>
+
+
+
       </div>
 
     </div>
   </div>
+<script>
 
+function toggleCategoryInput() {
+
+    let category =
+        document.getElementById("category").value;
+
+    let box =
+        document.getElementById("customCategoryBox");
+
+    if (category === "Other") {
+
+        box.style.display = "block";
+
+    } else {
+
+        box.style.display = "none";
+
+    }
+
+}
+
+</script>
 </body>
 </html>
